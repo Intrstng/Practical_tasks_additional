@@ -1,157 +1,110 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Tasks} from './components/Tasks';
+import {Todolist} from './Todolist';
+import { v1 } from 'uuid';
+
+// Hi guys!
+// 1. Let's try an alternative way. Instead of useState we can try useRef in Todolist.tsx:
+// <input
+//     //value={title}
+//     // onChange={ onChangeHandler }
+//     ref={onChangeRef}
+//     onKeyPress={onKeyPressHandler}
+// />
+// let onChangeRef = useRef<HTMLInputElement>(null)
+// Inside of  const addTask = () => {} use onChangeRef.current.value
+
+// 2. Let's try children and F.C:
+// We will use double 'tag' <Todolist></Todolist>
+// <Todolist title="What to learn"
+//           tasks={tasksForTodolist}
+//           removeTask={removeTask}
+//           changeFilter={changeFilter}
+//           addTask={addTask} >
+//     <div>
+//         <div>Many intresting information</div>
+//      </div>
+// </Todolist>
+//Inside of Todolist.tsx
+// Type out changes in PropsType: children?:React.ReactNode
+// export const Todolist:React.FC<PropsType>=({children, ...props}) =>{
+//     return(
+//         <div>
+//             <div>...</div>
+//             {children}
+//         </div>
+//      )
+// }
+// 3. Let's append some animation in our project:
+//yarn add  @formkit/auto-animate -D
+// we use -D, because the best practice is to add new extensions to the object inside the package.json
+// "devDependencies": {
+//     "@formkit/auto-animate": "^1.0.0-beta.3"
+//   }
+// const [listRef] = useAutoAnimate<HTMLUListElement>() in Todolist.tsx
+// <ul ref={listRef}>
+//Look how smoothly the tasks are added!
+//P.S. Do you understand why a new task append in all Todolists?
+// [because we only have one state for all our todolists, but we'll talk about that on Tuesday.]
 
 
-// Hi Guys!
-// Let's reinforce our current session!
-// -You have 2 arrays. You should create a new component TASKS, where you will render these arrays.
-// -Don't forget to assign types to our data.
-
-
-
-type TaskType = {
-    taskId: number
-    title: string
-    isDone: boolean
-}
-
-export type DataType = {
-    title: string
-    tasks: Array<TaskType>
-    students: Array<string>
-}
-
+export type FilterValuesType = "all" | "active" | "completed";
 
 function App() {
-    const data1: DataType = {
-        title: "What to do",
-        tasks: [
-            {taskId: 1, title: "HTML&CSS2", isDone: true},
-            {taskId: 2, title: "JS2", isDone: false}
-        ],
-        students: [
-            'Jago Wormald1',
-            'Saul Milne2',
-            'Aariz Hester3',
-            'Dion Reeve4',
-            'Anisa Ortega5',
-            'Blade Cisneros6',
-            'Malaikah Phelps7',
-            'Zeeshan Gallagher8',
-            'Isobella Vo9',
-            'Rizwan Mathis10',
-            'Menaal Leach11',
-            'Kian Walton12',
-            'Orion Lamb13',
-            'Faizah Huynh14',
-            'Crystal Vaughan15',
-            'Vivien Hickman16',
-            'Stuart Lu17',
-            'Karol Davison18',
-            'Dario Burns19',
-            'Chloe Rich20',
-            'Martyna Felix',
-            'Nida Glass',
-            'Maeve Miles',
-            'Hasnain Puckett',
-            'Ayman Cano',
-            'Safwan Perry',
-            'Fox Kelly',
-            'Louise Barlow',
-            'Malaki Mcgill',
-            'Leanna Cline',
-            'Willard Hodge',
-            'Amelia Dorsey',
-            'Kiah Porter',
-            'Jeanne Daly',
-            'Mohsin Armstrong',
-            'Laurie Rangel',
-            'Princess Tierney',
-            'Kasim Kendall',
-            'Darryl Cope',
-            'Elysha Ray',
-            'Liyana Harris',
-            'Kashif Blackburn',
-            'Atif Zimmerman',
-            'Sila Hartley',
-            'Ralphie Hebert',
-        ]
-    }
-    const data2: DataType =   {
-        title: "What to learn",
-        tasks: [
-            {taskId: 1, title: "HTML&CSS", isDone: false},
-            {taskId: 2, title: "JS", isDone: true}
-        ],
-        students: [
-            'Rick Kane',
-            'Finnlay Bentley',
-            'Samia North',
-            'Isaac Morton',
-            'Lily-Ann Clifford',
-            'Thalia Park',
-            'Sapphire Cruz',
-            'Cieran Vazquez',
-            'Anya Estes',
-            'Dominika Field',
-            'Rosanna Chung',
-            'Safiyah Davey',
-            'Ryley Beasley',
-            'Kalvin Trejo',
-            'Evie-Mae Farrell',
-            'Juliet Valencia',
-            'Astrid Austin',
-            'Lyle Montgomery',
-            'Nisha Mora',
-            'Kylie Callaghan',
-            'Star Wilks',
-            'Marissa Colley',
-            'Asa Fuller',
-            'Leigh Kemp',
-            'Avleen Dawson',
-            'Sammy Bonilla',
-            'Acacia Becker',
-            'Coral Shepherd',
-            'Melina Molina',
-            'Kiran Bailey',
-            'Clara Escobar',
-            'Alexandru Horn',
-            'Brandon-Lee Mercado',
-            'Elouise Weston',
-            'King Long',
-            'Kerri Searle',
-            'Kanye Hamer',
-            'Elwood Benitez',
-            'Mikail Whitaker',
-            'Bobby Hardy',
-            'Talha Ferry',
-            'Priscilla Landry',
-            'Olivia-Grace Cain',
-            'Kiaan Wallace',
-            'Wesley Padilla90',
-            'Ella-Grace Wooten91',
-            'Kaif Molloy92',
-            'Kamal Broadhurst93',
-            'Bianca Ferrell94',
-            'Micheal Talbot95',
-        ]
+
+    let [tasks, setTasks] = useState([
+        { id: v1(), title: "HTML&CSS", isDone: true },
+        { id: v1(), title: "JS", isDone: true },
+        { id: v1(), title: "ReactJS", isDone: false },
+        { id: v1(), title: "Rest API", isDone: false },
+        { id: v1(), title: "GraphQL", isDone: false },
+    ]);
+
+    function removeTask(id: string) {
+        let filteredTasks = tasks.filter(t => t.id != id);
+        setTasks(filteredTasks);
     }
 
-    const [data_1, setData_1] = useState<DataType>(data1)
+    function addTask(title: string) {
+        let task = { id: v1(), title: title, isDone: false };
+        let newTasks = [task, ...tasks];
+        setTasks(newTasks);
+    }
 
-    let dataForTodoList_1 = data1;
+    let [filter, setFilter] = useState<FilterValuesType>("all");
 
-    const [data_2, setData_2] = useState<DataType>(data2)
+    let tasksForTodolist = tasks;
 
-    let dataForTodoList_2 = data2;
+    if (filter === "active") {
+        tasksForTodolist = tasks.filter(t => t.isDone === false);
+    }
+    if (filter === "completed") {
+        tasksForTodolist = tasks.filter(t => t.isDone === true);
+    }
+
+    function changeFilter(value: FilterValuesType) {
+        setFilter(value);
+    }
+
     return (
         <div className="App">
-            <h2>List #1</h2>
-            <Tasks data={dataForTodoList_1}/>
+            {/* Todolist without children*/}
+            <Todolist title="What to learn"
+                      tasks={tasksForTodolist}
+                      removeTask={removeTask}
+                      changeFilter={changeFilter}
+                      addTask={addTask} />
 
-            <h2>List #2</h2>
-            <Tasks data={dataForTodoList_2}/>
+            {/* Todolist with children*/}
+            <Todolist title="What to learn"
+                      tasks={tasksForTodolist}
+                      removeTask={removeTask}
+                      changeFilter={changeFilter}
+                      addTask={addTask} >
+                <div>
+                    <div>Many interesting information</div>
+                </div>
+            </Todolist>
         </div>
     );
 }
@@ -184,180 +137,90 @@ export default App;
 
 
 
-//--------------------------------------------------------------
-// import React from 'react';
-// import './App.css';
-// import {Tasks} from "./Tasks";
+
+
+//-------------------------------------------------------------------------------------------------------
 //
-// export type DataType = {
-//     title: string
-//     tasks: Array<TasksType>
-//     students: Array<string>
-// }
-// export type TasksType = {
-//     taskId: number
-//     title: string
-//     isDone: boolean
-// }
-//
+// export type FilterValuesType = "all" | "active" | "completed";
 //
 // function App() {
-//     const data1= {
-//         title: "What to do",
-//         tasks: [
-//             {taskId: 1, title: "HTML&CSS2", isDone: true},
-//             {taskId: 2, title: "JS2", isDone: true}
-//         ],
-//         students: [
-//             'Jago Wormald1',
-//             'Saul Milne2',
-//             'Aariz Hester3',
-//             'Dion Reeve4',
-//             'Anisa Ortega5',
-//             'Blade Cisneros6',
-//             'Malaikah Phelps7',
-//             'Zeeshan Gallagher8',
-//             'Isobella Vo9',
-//             'Rizwan Mathis10',
-//             'Menaal Leach11',
-//             'Kian Walton12',
-//             'Orion Lamb13',
-//             'Faizah Huynh14',
-//             'Crystal Vaughan15',
-//             'Vivien Hickman16',
-//             'Stuart Lu17',
-//             'Karol Davison18',
-//             'Dario Burns19',
-//             'Chloe Rich20',
-//             'Martyna Felix',
-//             'Nida Glass',
-//             'Maeve Miles',
-//             'Hasnain Puckett',
-//             'Ayman Cano',
-//             'Safwan Perry',
-//             'Fox Kelly',
-//             'Louise Barlow',
-//             'Malaki Mcgill',
-//             'Leanna Cline',
-//             'Willard Hodge',
-//             'Amelia Dorsey',
-//             'Kiah Porter',
-//             'Jeanne Daly',
-//             'Mohsin Armstrong',
-//             'Laurie Rangel',
-//             'Princess Tierney',
-//             'Kasim Kendall',
-//             'Darryl Cope',
-//             'Elysha Ray',
-//             'Liyana Harris',
-//             'Kashif Blackburn',
-//             'Atif Zimmerman',
-//             'Sila Hartley',
-//             'Ralphie Hebert',
-//         ]
+//
+//     let [tasks, setTasks] = useState([
+//         {id: v1(), title: "HTML&CSS", isDone: true},
+//         {id: v1(), title: "JS", isDone: true},
+//         {id: v1(), title: "ReactJS", isDone: false},
+//         {id: v1(), title: "Rest API", isDone: false},
+//         {id: v1(), title: "GraphQL", isDone: false},
+//     ]);
+//
+//     function removeTask(id: string) {
+//         let filteredTasks = tasks.filter(t => t.id != id);
+//         setTasks(filteredTasks);
 //     }
-//     const data2 = {
-//         title: "What to learn",
-//         tasks: [
-//             {taskId: 1, title: "HTML&CSS", isDone: true},
-//             {taskId: 2, title: "JS", isDone: true}
-//         ],
-//         students: [
-//             'Rick Kane',
-//             'Finnlay Bentley',
-//             'Samia North',
-//             'Isaac Morton',
-//             'Lily-Ann Clifford',
-//             'Thalia Park',
-//             'Sapphire Cruz',
-//             'Cieran Vazquez',
-//             'Anya Estes',
-//             'Dominika Field',
-//             'Rosanna Chung',
-//             'Safiyah Davey',
-//             'Ryley Beasley',
-//             'Kalvin Trejo',
-//             'Evie-Mae Farrell',
-//             'Juliet Valencia',
-//             'Astrid Austin',
-//             'Lyle Montgomery',
-//             'Nisha Mora',
-//             'Kylie Callaghan',
-//             'Star Wilks',
-//             'Marissa Colley',
-//             'Asa Fuller',
-//             'Leigh Kemp',
-//             'Avleen Dawson',
-//             'Sammy Bonilla',
-//             'Acacia Becker',
-//             'Coral Shepherd',
-//             'Melina Molina',
-//             'Kiran Bailey',
-//             'Clara Escobar',
-//             'Alexandru Horn',
-//             'Brandon-Lee Mercado',
-//             'Elouise Weston',
-//             'King Long',
-//             'Kerri Searle',
-//             'Kanye Hamer',
-//             'Elwood Benitez',
-//             'Mikail Whitaker',
-//             'Bobby Hardy',
-//             'Talha Ferry',
-//             'Priscilla Landry',
-//             'Olivia-Grace Cain',
-//             'Kiaan Wallace',
-//             'Wesley Padilla90',
-//             'Ella-Grace Wooten91',
-//             'Kaif Molloy92',
-//             'Kamal Broadhurst93',
-//             'Bianca Ferrell94',
-//             'Micheal Talbot95',
-//         ]
+//
+//     function addTask(title: string) {
+//         let task = {id: v1(), title: title, isDone: false};
+//         let newTasks = [task, ...tasks];
+//         setTasks(newTasks);
 //     }
+//
+//     let [filter, setFilter] = useState<FilterValuesType>("all");
+//
+//     let tasksForTodolist = tasks;
+//
+//     if (filter === "active") {
+//         tasksForTodolist = tasks.filter(t => t.isDone === false);
+//     }
+//     if (filter === "completed") {
+//         tasksForTodolist = tasks.filter(t => t.isDone === true);
+//     }
+//
+//     function changeFilter(value: FilterValuesType) {
+//         setFilter(value);
+//     }
+//
 //
 //     return (
 //         <div className="App">
-//             <Tasks data={data1}/>
-//             <Tasks data={data2}/>
+//             <Todolist title="What to learn"
+//                       tasks={tasksForTodolist}
+//                       removeTask={removeTask}
+//                       changeFilter={changeFilter}
+//                       addTask={addTask}>
+//                 <div>
+//                     <div>Many intresting information</div>
+//                     <div>Many intresting information</div>
+//                     <div>Many intresting information</div>
+//                     <div>Many intresting information</div>
+//                     <div>Many intresting information</div>
+//                 </div>
+//             </Todolist>
+//
+//             <Todolist title="What to learn"
+//                       tasks={tasksForTodolist}
+//                       removeTask={removeTask}
+//                       changeFilter={changeFilter}
+//                       addTask={addTask}>
+//                 <div>
+//                     <div>A lot of boring information</div>
+//                     <div>A lot of boring information</div>
+//                     <div>A lot of boring information</div>
+//                     <input placeholder={'A lot of boring information'}/>
+//                     <div>
+//                         <button>Boring Button 1</button>
+//                         <button>Boring Button 2</button>
+//                         <button>Boring Button 3</button>
+//                     </div>
+//                 </div>
+//             </Todolist>
+//
+//             <Todolist title="What to learn"
+//                       tasks={tasksForTodolist}
+//                       removeTask={removeTask}
+//                       changeFilter={changeFilter}
+//                       addTask={addTask}/>
 //         </div>
 //     );
 // }
 //
 // export default App;
-
-// import React from 'react';
-// import {DataType} from "./App";
-//
-// type  TasksPropsType = {
-//     data: DataType
-// }
-//
-// export const Tasks = (props: TasksPropsType) => {
-//     return (
-//         <div>
-//             <h1>{props.data.title}</h1>
-//             <ul>
-//                 {props.data.tasks.map(el => {
-//                     return (
-//                         <li>
-//                             <span>{el.taskId}</span>
-//                             <span>{el.title}</span>
-//                             <span>{el.isDone}</span>
-//                         </li>
-//                     )
-//                 })}
-//             </ul>
-//
-//             <ul>
-//                 {props.data.students.map(el => {
-//                     return (
-//                         <li>{el}</li>
-//                     )
-//                 })}
-//             </ul>
-//         </div>
-//     );
-// };
-
-//--------------------------------------------------------------
